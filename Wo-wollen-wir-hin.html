@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wo wollen wir hin? | newgen</title>
+<style>
+@import url('https://api.fontshare.com/v2/css?f[]=switzer@400,500,600,700&display=swap');
+:root{--navy:#002c42;--ink:#1d2430;--muted:#6b7480;--line:#e6e8ec;--accent:#3538cd}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0}
+body{font-family:'Switzer',Arial,sans-serif;color:var(--ink);background:#eceef1;padding:26px 16px 96px;
+  -webkit-font-smoothing:antialiased;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.doc{width:210mm;margin:0 auto;background:#fff;padding:16mm 15mm 15mm;box-shadow:0 8px 30px rgba(16,30,50,.14)}
+
+/* ---------- Kopf ---------- */
+.top{display:flex;justify-content:space-between;align-items:flex-start;gap:30px;
+  border-bottom:2px solid var(--navy);padding-bottom:20px}
+.eyebrow{font-size:10px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin:0 0 8px}
+h1{font-size:27px;font-weight:700;letter-spacing:-.015em;color:var(--navy);margin:0 0 8px;line-height:1.1}
+.lead{font-size:12.5px;color:var(--muted);margin:0;line-height:1.55;max-width:62ch}
+.logo{width:150px;flex:none;margin-top:3px}
+.logo path{fill:var(--navy)}
+
+/* Druckkopf – nur im PDF */
+.pkopf{display:none}
+
+/* ---------- Navigation ---------- */
+.nav{display:flex;gap:10px;margin-top:24px;align-items:center}
+.nav button{font:600 13px 'Switzer',Arial,sans-serif;color:var(--muted);background:#f2f3f6;
+  border:none;border-radius:999px;padding:10px 20px;cursor:pointer;transition:.12s}
+.nav button:hover{color:var(--navy)}
+.nav button.an{background:var(--navy);color:#fff}
+.nbadge{display:inline-block;min-width:20px;padding:1px 6px;margin-left:7px;border-radius:99px;
+  background:rgba(255,255,255,.25);font-size:11px;font-weight:700}
+.nav button:not(.an) .nbadge{background:#e2e4ea;color:var(--muted)}
+
+/* ---------- Kopfzeile der Ziele-Seite ---------- */
+.meta{display:grid;grid-template-columns:1fr 260px;gap:22px;margin-top:26px;
+  padding-bottom:18px;border-bottom:1px solid var(--line)}
+.mf{display:flex;flex-direction:column;gap:4px}
+.mf label{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.mf input{font:700 15px 'Switzer',Arial,sans-serif;color:var(--navy);border:none;background:none;
+  text-overflow:ellipsis;width:100%;
+  outline:none;padding:4px 0;border-bottom:1.5px solid var(--line);transition:.12s}
+.mf input:focus{border-bottom-color:var(--accent)}
+.mf input::placeholder{color:#b9bec7;font-weight:500}
+
+/* ---------- Ziele ---------- */
+.liste{margin-top:8px}
+.grp{margin-top:20px;border:1px solid var(--line);border-left:4px solid var(--accent);
+  border-radius:4px 12px 12px 4px;padding:16px 18px 14px;break-inside:avoid;page-break-inside:avoid}
+.ober{display:grid;grid-template-columns:30px 1fr 118px 30px;gap:12px;align-items:start}
+.onum{grid-row:span 2;font:700 17px 'Switzer',Arial,sans-serif;color:var(--accent);
+  text-align:center;padding-top:3px}
+.ober textarea.zt{font:700 16px/1.35 'Switzer',Arial,sans-serif;color:var(--navy)}
+.ober .odat{justify-self:end}
+.owho{grid-column:2/4;display:flex;align-items:baseline;gap:7px;margin-top:2px}
+.owho span{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);flex:none}
+.owho textarea{font:600 12.5px/1.4 'Switzer',Arial,sans-serif;color:var(--muted);flex:1}
+
+textarea,.zrow input{border:none;background:none;outline:none;padding:2px 0;min-width:0;
+  border-bottom:1.5px solid transparent;transition:.12s;resize:none;overflow:hidden;
+  display:block;width:100%;field-sizing:content;font-family:'Switzer',Arial,sans-serif}
+textarea:focus,.zrow input:focus{border-bottom-color:var(--accent)}
+textarea::placeholder,input::placeholder{color:#b9bec7;font-weight:400}
+input[type=date]{font:600 12.5px 'Switzer',Arial,sans-serif;color:var(--navy);border:none;
+  background:none;outline:none;padding:2px 0;width:100%}
+.datp{display:none}
+
+/* Unterziele */
+.unterliste{margin-top:12px;padding-top:4px;border-top:1px solid var(--line)}
+.zrow{display:grid;grid-template-columns:30px 22px 1fr 118px 30px;gap:12px;align-items:start;
+  padding:8px 0;border-top:1px solid #f0f1f4}
+.zrow:first-child{border-top:none}
+.zrow .sp{grid-column:1}
+.box{grid-column:2;width:17px;height:17px;margin-top:3px;border:1.7px solid #c8ccd4;border-radius:5px;
+  background:none;cursor:pointer;padding:0;flex:none;transition:.12s;position:relative}
+.box:hover{border-color:var(--accent)}
+.box.ok{background:var(--accent);border-color:var(--accent)}
+.box.ok::after{content:"";position:absolute;left:5px;top:1px;width:5px;height:10px;
+  border:solid #fff;border-width:0 2px 2px 0;transform:rotate(42deg)}
+.zrow textarea.zt{font:500 13px/1.45 'Switzer',Arial,sans-serif;color:var(--ink)}
+.zrow.erl textarea.zt{color:#9aa1ab;text-decoration:line-through}
+.zrow .wer{font:600 11px/1.4 'Switzer',Arial,sans-serif;color:var(--muted);margin-top:3px}
+.zrow .dat{justify-self:end}
+.del{border:none;background:none;color:#ccd0d7;font-size:16px;cursor:pointer;padding:2px 4px;
+  line-height:1;justify-self:center;margin-top:1px}
+.del:hover{color:#c0392b}
+
+.uadd{border:none;background:none;font:600 11.5px 'Switzer',Arial,sans-serif;color:var(--muted);
+  cursor:pointer;padding:9px 0 2px 42px;display:block}
+.uadd:hover{color:var(--accent)}
+.oadd{display:block;width:100%;border:1.5px dashed #d6d9e0;background:none;border-radius:12px;
+  font:600 13px 'Switzer',Arial,sans-serif;color:var(--muted);padding:14px;cursor:pointer;margin-top:20px}
+.oadd:hover{border-color:var(--accent);color:var(--accent)}
+.leerhin{margin:26px 0 0;font-size:12.5px;color:var(--muted)}
+.leerhin button{border:none;background:none;color:var(--accent);font:600 12.5px 'Switzer',Arial,sans-serif;
+  cursor:pointer;padding:0;text-decoration:underline}
+
+/* ---------- Themen-Katalog ---------- */
+.kap{margin-top:24px;break-inside:avoid}
+.kkopf{display:flex;align-items:center;gap:11px;padding:9px 14px;border-radius:9px;
+  background:var(--kt);margin-bottom:6px}
+.kkopf .kn{font:700 10.5px 'Switzer',Arial,sans-serif;color:#fff;background:var(--kc);
+  border-radius:5px;padding:3px 7px;letter-spacing:.06em}
+.kkopf b{font-size:13.5px;font-weight:700;color:var(--kc);letter-spacing:-.005em}
+.thema{display:flex;align-items:baseline;gap:12px;width:100%;text-align:left;background:#fff;
+  border:none;border-top:1px solid var(--line);padding:9px 14px;cursor:pointer;font:inherit;
+  transition:.1s;border-radius:8px}
+.thema:first-of-type{border-top:none}
+.thema:hover{background:#f7f8fa}
+.thema b{flex:none;font-size:12.5px;font-weight:700;color:var(--navy)}
+.thema em{flex:1;font-style:normal;font-size:11px;color:var(--muted);min-width:0}
+.thema .plus{flex:none;width:21px;height:21px;border-radius:7px;background:#eef0f4;color:var(--muted);
+  font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;align-self:center}
+.thema:hover .plus{background:var(--kc);color:#fff}
+.thema.drin b{color:var(--kc)}
+.thema.drin .plus{background:var(--kt);color:var(--kc)}
+.thema.drin .plus::before{content:"✓"}
+.thema:not(.drin) .plus::before{content:"+"}
+
+.fuss{margin-top:28px;padding-top:12px;border-top:1px solid var(--line);
+  font-size:9.5px;color:var(--muted);line-height:1.6}
+
+/* ---------- Knöpfe ---------- */
+.bar{position:fixed;right:20px;bottom:20px;z-index:50;display:flex;gap:10px}
+.bar button{display:inline-flex;align-items:center;gap:8px;border:none;border-radius:10px;
+  padding:12px 17px;font:600 13.5px 'Switzer',Arial,sans-serif;cursor:pointer;
+  background:var(--accent);color:#fff;box-shadow:0 8px 22px rgba(53,56,205,.32)}
+.bar button.ghost{background:#fff;color:var(--navy);box-shadow:0 6px 18px rgba(16,30,50,.16)}
+.bar button:hover{filter:brightness(1.06)}
+
+/* ================= DRUCK ================= */
+@page{size:A4;margin:14mm 13mm 12mm}
+@media print{
+  body{background:#fff;padding:0}
+  .doc{width:auto;padding:0;box-shadow:none}
+  .nav,.bar,.fuss,.uadd,.oadd,.del,.leerhin,.top{display:none!important}
+  #seite-themen{display:none!important}
+  #seite-ziele{display:block!important}
+  .zrow.druckleer,.grp.druckleer{display:none!important}
+
+  /* Druckkopf */
+  .pkopf{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;
+    border-bottom:2.5px solid var(--navy);padding-bottom:12px;margin-bottom:4px}
+  .pkopf .pk-t{font:700 26px/1.1 'Switzer',Arial,sans-serif;color:var(--navy);letter-spacing:-.02em}
+  .pkopf .pk-s{font:600 12px 'Switzer',Arial,sans-serif;color:var(--accent);
+    letter-spacing:.14em;text-transform:uppercase;margin-bottom:6px}
+  .pkopf .pk-z{font:600 12.5px 'Switzer',Arial,sans-serif;color:var(--muted);margin-top:5px}
+  .pkopf .pk-l{width:118px;flex:none}
+  .pkopf .pk-l svg{width:100%;height:auto}
+  .pkopf .pk-l path{fill:var(--navy)}
+
+  .meta{display:none}
+  .liste{margin-top:0}
+
+  .grp{margin-top:13px;border:1px solid #d9dce2;border-left:4px solid var(--accent);
+    padding:12px 14px 11px;border-radius:3px 9px 9px 3px}
+  .ober{grid-template-columns:26px 1fr 92px 0;gap:10px}
+  .onum{font-size:15px;padding-top:1px}
+  .ober textarea.zt{font-size:13.5px;line-height:1.3;color:#000}
+  .owho textarea{font-size:11px;color:#4a515c}
+  .owho span{font-size:8px}
+  .unterliste{margin-top:9px;padding-top:2px}
+  .zrow{grid-template-columns:26px 20px 1fr 92px 0;gap:10px;padding:5.5px 0}
+  .zrow textarea.zt{font-size:11.5px;line-height:1.35;color:#1d2430}
+  .zrow.erl textarea.zt{color:#8b929c}
+  .zrow .wer{font-size:9.5px;color:#6b7480}
+  .box{width:14px;height:14px;border-color:#9aa1ab;border-width:1.4px;margin-top:1px}
+  .box.ok::after{left:4px;top:0;width:4px;height:8px;border-width:0 1.8px 1.8px 0}
+
+  textarea,input[type=date]{border-bottom-color:transparent!important;overflow:visible;padding:0}
+  input[type=date]{display:none!important}
+  .datp{display:block;font:700 11px 'Switzer',Arial,sans-serif;color:#000;text-align:right;
+    white-space:nowrap;letter-spacing:.01em}
+  .ober .datp{font-size:11.5px}
+  textarea::placeholder,input::placeholder{color:transparent!important}
+
+  /* Fußzeile auf dem Ausdruck */
+  .pfuss{display:flex!important;justify-content:space-between;gap:20px;margin-top:16px;
+    padding-top:9px;border-top:1px solid #d9dce2;
+    font:600 9.5px 'Switzer',Arial,sans-serif;color:#7a818b;letter-spacing:.02em}
+}
+.pfuss{display:none}
+</style>
+</head>
+<body>
+<div class="bar">
+  <button class="ghost" onclick="allesLoeschen()">Zur&uuml;cksetzen</button>
+  <button onclick="drucken()">Als PDF speichern</button>
+</div>
+<div class="doc">
+  <div class="top">
+    <div>
+      <p class="eyebrow">KI Integrator Campus &middot; Ziele-Planer</p>
+      <h1>Wo wollen wir hin?</h1>
+      <p class="lead">Oberziele festlegen, Unterziele darunter &ndash; wer macht es, bis wann. Anregungen liegen im Themen-Katalog. Der Ausdruck ist zum Aufh&auml;ngen gedacht.</p>
+    </div>
+    <svg class="logo" role="img" aria-label="newgen AG - time to move" xmlns="http://www.w3.org/2000/svg" viewBox="23.9 56.8 1057.1 219.2">
+  
+  <g>
+      <path d="M403.2,123.4c0-17.2,6.8-32.8,17.8-44.3v-14.2h-30.8v59.7c0,15-12.4,27.2-27.6,27.2s-27.6-12.2-27.6-27.2v-59.7h-30.8v59.7c0,15-12.4,27.2-27.6,27.2s-18.9-5.3-23.7-13.3c-2.4,11-7.5,21.1-14.9,29.2,10.3,9,23.8,14.4,38.6,14.4s32.4-7.2,43.1-18.7c10.7,11.5,26,18.7,43.1,18.7s38.9-10.6,49.3-26.6c-5.5-9.5-8.6-20.4-8.6-32.1Z"/>
+      <path d="M62.8,184.3v-61h0,0c0-10.9,6.1-21.2,16.1-25.3,20-8.2,39.1,6.3,39.1,25.3v61h30.8v-12.7c-14-11.8-22.8-29.1-22.8-48.3s4-25.1,10.9-35.2c-10.7-14.1-27.6-23.2-46.6-23.2s-19.4,2.5-27.6,7v-6.6h-30.8v58.1s0,61,0,61h30.8Z"/>
+      <path d="M522.4,192.6c-8.5,6.9-18.1,12.1-28.4,15.5.2,13.6-6.6,29-26.8,29-.3,0-.6,0-.9,0-19.2,0-33.9-19.6-25-39.9,4.3-9.7,14.3-15.7,25-15.4h0c19,0,35.9-9.1,46.5-23.1-6.7-10.2-10.6-22.3-10.6-35.3s3.9-25.2,10.7-35.3c-11.5-15.2-30.3-24.6-51.1-23-27.7,2.1-50.5,24.1-53.6,51.7-2.2,19.6,5.5,37.6,18.6,49.6-13.1,12.1-20.8,30-18.6,49.7,3,26.8,24.6,48.5,51.4,51.5,35.2,3.9,65.2-23.7,65.2-58.1s-.9-11.5-2.5-16.8ZM441.5,135.8c-9.7-21.7,7.8-42.9,29-39.8,12.1,1.8,21.9,11.8,23.3,24,1.9,16.7-11.1,30.9-27.4,30.9,0,0,0,0,0,0h0c-10.5.3-20.6-5.5-24.9-15.2Z"/>
+      <path d="M741.1,184.3h-30.8v-60.1c0-13.1-8.7-25-21.4-27.8-17.9-3.9-33.8,9.7-33.8,27h-30.8c0-35.5,31.8-63.7,68.4-57.7,28.4,4.7,48.6,30.4,48.6,59.2v59.4Z"/>
+      <path d="M593.3,123.3c0,15.2-12.4,27.6-27.6,27.6s-3.6-.2-5.3-.5l57.6-57.6-10.9-10.9-.4-.4c-6.2-6.1-13.5-11-21.8-13.7-41.3-13.2-79.4,18.4-77.6,58.1,1.4,29.9,26.2,54.5,56.1,55.7,33.3,1.3,60.8-25.4,60.8-58.4h-30.8ZM538.6,117.6c2.1-10.5,10.5-19.1,21-21.3,3.9-.8,7.7-.8,11.4-.1l-32.4,32.4c-.7-3.5-.7-7.2,0-11Z"/>
+      <path d="M190.3,182.1c-32.9,0-59.5-27.2-58.4-60.3.9-30,25.6-55.1,55.6-56.6,16.5-.8,32.2,5.2,43.9,16.8l.3.3,10.9,10.9-57.6,57.6c1.7.3,3.5.5,5.3.5,15.2,0,27.6-12.4,27.6-27.6h30.8c0,32.2-26.2,58.5-58.5,58.5ZM184.2,96.6c-10.5,2.2-18.9,10.8-21,21.3-.8,3.8-.7,7.5,0,11l32.4-32.4c-3.7-.7-7.5-.7-11.4.1Z"/>
+      <path d="M573.3,255.5c1.1,0,2.2,0,3.4-.3,1.1-.2,2.1-.4,2.8-.7v5.2c-.8.3-1.8.6-3.2.9-1.4.2-2.7.4-4,.4-2.3,0-4.4-.4-6.3-1.2-1.9-.8-3.4-2.2-4.5-4.1-1.1-1.9-1.7-4.6-1.7-8.1v-26h-6.2v-3.2l6.3-2.6,2.6-9.5h4v10.2h12.9v5.2h-12.9v25.8c0,2.8.6,4.8,1.9,6.2,1.3,1.4,3,2,5.1,2Z"/>
+      <path d="M591.8,199.8c1.1,0,2,.4,2.8,1.1.8.7,1.2,1.8,1.2,3.3s-.4,2.6-1.2,3.3c-.8.7-1.7,1.1-2.8,1.1s-2.1-.4-2.9-1.1-1.1-1.8-1.1-3.3.4-2.6,1.1-3.3c.8-.7,1.7-1.1,2.9-1.1ZM595,216.3v43.9h-6.6v-43.9h6.6Z"/>
+      <path d="M656.7,215.5c4.8,0,8.5,1.3,10.9,3.8,2.5,2.5,3.7,6.6,3.7,12.2v28.7h-6.6v-28.4c0-3.5-.8-6.2-2.3-8-1.5-1.8-3.8-2.7-6.8-2.7s-7.3,1.2-9.2,3.7c-1.9,2.5-2.9,6.1-2.9,10.9v24.5h-6.6v-28.4c0-2.4-.3-4.4-1-5.9-.7-1.6-1.7-2.8-3-3.5-1.3-.8-3-1.2-5.1-1.2-2.9,0-5.2.6-7,1.8s-3,3-3.8,5.3c-.8,2.4-1.2,5.3-1.2,8.7v23.2h-6.6v-43.9h5.4l1,6.2h.4c.9-1.5,2-2.8,3.3-3.8s2.8-1.8,4.5-2.4c1.7-.5,3.4-.8,5.3-.8,3.3,0,6.1.6,8.4,1.9,2.3,1.2,3.9,3.1,4.9,5.7h.4c1.4-2.5,3.4-4.4,5.9-5.7,2.5-1.2,5.3-1.9,8.2-1.9Z"/>
+      <path d="M701.9,215.5c3.7,0,6.9.8,9.6,2.5,2.7,1.7,4.7,4,6.1,6.9,1.4,3,2.1,6.5,2.1,10.4v4.1h-30.3c0,5.2,1.4,9.1,3.8,11.8,2.5,2.7,6,4,10.5,4s5.2-.3,7.4-.8c2.1-.5,4.4-1.3,6.6-2.2v5.8c-2.2,1-4.4,1.7-6.6,2.2-2.2.5-4.7.7-7.7.7-4.2,0-7.9-.9-11-2.6-3.1-1.7-5.6-4.3-7.3-7.6-1.7-3.3-2.6-7.4-2.6-12.3s.8-8.8,2.4-12.3c1.6-3.5,3.8-6.1,6.7-8,2.9-1.9,6.3-2.8,10.2-2.8ZM701.8,220.9c-3.5,0-6.4,1.2-8.5,3.5s-3.4,5.6-3.8,9.7h23.2c0-2.6-.4-4.9-1.2-6.9-.8-2-2-3.5-3.6-4.6s-3.7-1.7-6.2-1.7Z"/>
+      <path d="M766.5,255.5c1.1,0,2.2,0,3.4-.3,1.1-.2,2.1-.4,2.8-.7v5.2c-.8.3-1.8.6-3.2.9-1.4.2-2.7.4-4,.4-2.3,0-4.4-.4-6.3-1.2-1.9-.8-3.4-2.2-4.5-4.1-1.1-1.9-1.7-4.6-1.7-8.1v-26h-6.2v-3.2l6.3-2.6,2.6-9.5h4v10.2h12.9v5.2h-12.9v25.8c0,2.8.6,4.8,1.9,6.2,1.3,1.4,3,2,5.1,2Z"/>
+      <path d="M819.4,238.1c0,3.6-.5,6.8-1.4,9.6-.9,2.8-2.3,5.2-4,7.2-1.8,1.9-3.9,3.4-6.4,4.5-2.5,1-5.3,1.5-8.5,1.5s-5.6-.5-8.1-1.5c-2.4-1-4.6-2.5-6.3-4.5-1.8-1.9-3.2-4.3-4.1-7.2-1-2.8-1.5-6-1.5-9.6s.8-8.9,2.4-12.3c1.6-3.4,4-6,7-7.7,3-1.8,6.6-2.7,10.8-2.7s7.5.9,10.5,2.7c3,1.8,5.3,4.4,7,7.7,1.7,3.4,2.5,7.5,2.5,12.2ZM786,238.1c0,3.5.5,6.6,1.4,9.2.9,2.6,2.4,4.6,4.3,6,1.9,1.4,4.5,2.1,7.5,2.1s5.5-.7,7.5-2.1c2-1.4,3.4-3.4,4.3-6,.9-2.6,1.4-5.6,1.4-9.2s-.5-6.5-1.4-9.1c-.9-2.5-2.4-4.5-4.3-5.9-1.9-1.4-4.5-2.1-7.6-2.1-4.6,0-7.9,1.5-10,4.5-2.1,3-3.2,7.2-3.2,12.5Z"/>
+      <path d="M899.8,215.5c4.8,0,8.5,1.3,10.9,3.8,2.5,2.5,3.7,6.6,3.7,12.2v28.7h-6.6v-28.4c0-3.5-.8-6.2-2.3-8-1.5-1.8-3.8-2.7-6.8-2.7s-7.3,1.2-9.2,3.7c-1.9,2.5-2.9,6.1-2.9,10.9v24.5h-6.6v-28.4c0-2.4-.3-4.4-1-5.9-.7-1.6-1.7-2.8-3-3.5-1.3-.8-3-1.2-5.1-1.2-2.9,0-5.2.6-7,1.8s-3,3-3.8,5.3c-.8,2.4-1.2,5.3-1.2,8.7v23.2h-6.6v-43.9h5.4l1,6.2h.4c.9-1.5,2-2.8,3.3-3.8s2.8-1.8,4.5-2.4c1.7-.5,3.4-.8,5.3-.8,3.3,0,6.1.6,8.4,1.9,2.3,1.2,3.9,3.1,4.9,5.7h.4c1.4-2.5,3.4-4.4,5.9-5.7,2.5-1.2,5.3-1.9,8.2-1.9Z"/>
+      <path d="M965.9,238.1c0,3.6-.5,6.8-1.4,9.6-.9,2.8-2.3,5.2-4,7.2-1.8,1.9-3.9,3.4-6.4,4.5-2.5,1-5.3,1.5-8.5,1.5s-5.6-.5-8.1-1.5c-2.4-1-4.6-2.5-6.3-4.5-1.8-1.9-3.2-4.3-4.1-7.2-1-2.8-1.5-6-1.5-9.6s.8-8.9,2.4-12.3c1.6-3.4,4-6,7-7.7,3-1.8,6.6-2.7,10.8-2.7s7.5.9,10.5,2.7c3,1.8,5.3,4.4,7,7.7,1.7,3.4,2.5,7.5,2.5,12.2ZM932.6,238.1c0,3.5.5,6.6,1.4,9.2.9,2.6,2.4,4.6,4.3,6,1.9,1.4,4.5,2.1,7.5,2.1s5.5-.7,7.5-2.1c2-1.4,3.4-3.4,4.3-6,.9-2.6,1.4-5.6,1.4-9.2s-.5-6.5-1.4-9.1c-.9-2.5-2.4-4.5-4.3-5.9-1.9-1.4-4.5-2.1-7.6-2.1-4.6,0-7.9,1.5-10,4.5-2.1,3-3.2,7.2-3.2,12.5Z"/>
+      <path d="M987.1,260.1l-16.7-43.9h7.1l9.6,26.5c.7,1.8,1.3,3.8,2,6,.7,2.2,1.2,4,1.4,5.3h.3c.3-1.3.9-3.1,1.6-5.3.7-2.2,1.4-4.2,2-6l9.6-26.5h7.1l-16.7,43.9h-7.6Z"/>
+      <path d="M1035.3,215.5c3.7,0,6.9.8,9.6,2.5,2.7,1.7,4.7,4,6.1,6.9,1.4,3,2.1,6.5,2.1,10.4v4.1h-30.3c0,5.2,1.4,9.1,3.8,11.8,2.5,2.7,6,4,10.5,4s5.2-.3,7.4-.8c2.1-.5,4.4-1.3,6.6-2.2v5.8c-2.2,1-4.4,1.7-6.6,2.2-2.2.5-4.7.7-7.7.7-4.2,0-7.9-.9-11-2.6-3.1-1.7-5.6-4.3-7.3-7.6-1.7-3.3-2.6-7.4-2.6-12.3s.8-8.8,2.4-12.3c1.6-3.5,3.8-6.1,6.7-8,2.9-1.9,6.3-2.8,10.2-2.8ZM1035.2,220.9c-3.6,0-6.4,1.2-8.5,3.5-2.1,2.3-3.4,5.6-3.8,9.7h23.2c0-2.6-.4-4.9-1.2-6.9-.8-2-2-3.5-3.6-4.6s-3.7-1.7-6.2-1.7Z"/>
+      <path d="M1063.4,256c0-1.9.5-3.2,1.4-4,.9-.8,2-1.2,3.4-1.2s2.5.4,3.4,1.2c.9.8,1.4,2.1,1.4,4s-.5,3.2-1.4,4c-.9.8-2,1.3-3.4,1.3s-2.5-.4-3.4-1.3c-.9-.8-1.4-2.2-1.4-4ZM1070.4,243.9h-4.4l-1.8-42.3h8l-1.8,42.3Z"/>
+  </g>
+</svg>
+  </div>
+
+  <div class="nav">
+    <button id="navZiele" class="an" onclick="wechsel('ziele')">Eure Ziele<span class="nbadge" id="anzahl">0</span></button>
+    <button id="navThemen" onclick="wechsel('themen')">Themen-Katalog</button>
+  </div>
+
+  <!-- Druckkopf -->
+  <div class="pkopf">
+    <div>
+      <div class="pk-s">Unsere KI-Ziele</div>
+      <div class="pk-t" id="pKanzlei">Unsere Kanzlei</div>
+      <div class="pk-z" id="pZeitraum"></div>
+    </div>
+    <span class="pk-l" id="pLogo"></span>
+  </div>
+
+  <div id="seite-ziele">
+    <div class="meta">
+      <div class="mf">
+        <label for="kanzlei">Kanzlei</label>
+        <input id="kanzlei" placeholder="Name der Kanzlei">
+      </div>
+      <div class="mf">
+        <label for="zeitraum">Zeitraum</label>
+        <input id="zeitraum" placeholder="September bis Dezember 2026">
+      </div>
+    </div>
+    <div class="liste" id="liste"></div>
+    <button type="button" class="oadd" onclick="addOber()">+ Oberziel</button>
+    <p class="leerhin" id="leerhin" hidden>Noch leer &ndash; legt ein Oberziel an oder holt euch eins aus dem <button type="button" onclick="wechsel('themen')">Themen-Katalog</button>.</p>
+  </div>
+
+  <div id="seite-themen" hidden>
+    <div id="katalog"></div>
+  </div>
+
+  <div class="pfuss">
+    <span>Wochen-Check: zehn Minuten, fester Termin &middot; erledigte Schritte abhaken</span>
+    <span>newgen &middot; KI Integrator Campus</span>
+  </div>
+
+  <p class="fuss">newgen &middot; KI Integrator Campus &middot; Eure Eingaben bleiben nur in eurem Browser &ndash; nichts geht an einen Server.</p>
+</div>
+
+<script>
+// ---------------------------------------------------------------
+// Themen-Katalog: die neun Bereiche der Selbsteinschätzung,
+// heruntergebrochen auf konkrete Themen aus den Campus-Sessions.
+// ---------------------------------------------------------------
+var KATALOG = [
+  {n:"01", t:"Strategie & roter Faden", c:"#3538cd", tint:"#f3f3fc", themen:[
+    ["KI-Strategie auf einer Seite","Ziel und Ergebnisse schriftlich, im Team vorgestellt"],
+    ["Regelwerk & Tool-Liste","kurz, schriftlich, für alle sichtbar"],
+    ["Zeitfresser einsammeln","je Bereich fragen: Was frisst am meisten Zeit?"],
+    ["Fester KI-Termin mit der Geschäftsführung","entscheiden statt vertagen"]]},
+  {n:"02", t:"Rollen & Verantwortung", c:"#5a31c8", tint:"#f5f3fc", themen:[
+    ["KI-Integrator mit klarem Auftrag","Zeit und Budget geregelt"],
+    ["Multiplikatoren benennen","eine Ansprechperson je Abteilung"],
+    ["Wissen auf mehrere Köpfe verteilen","weg vom Ein-Personen-Wissen"],
+    ["Vertretung regeln","es läuft auch im Urlaub weiter"]]},
+  {n:"03", t:"Zeit & feste Termine", c:"#7c2ec0", tint:"#f7f2fb", themen:[
+    ["Wochen-Check einführen","zehn Minuten, fester Platz im Kalender"],
+    ["KI als Punkt im Jour fixe","kurz, aber jedes Mal"],
+    ["Feste Ausprobier-Zeit","geblockt, nicht nur wenn Luft ist"],
+    ["Schreibzeit für Prozesse","wöchentlich eine halbe Stunde"]]},
+  {n:"04", t:"Mitarbeitende & Akzeptanz", c:"#9c2cb2", tint:"#f9f2fa", themen:[
+    ["Erfolgserlebnis je Abteilung","z. B. Papierkontoauszüge automatisch auslesen"],
+    ["Spielerische Wochenaufgaben","kleine Challenges statt Frontalschulung"],
+    ["Klassenarbeit oder Trash TV","eine newgen-Challenge ausprobieren"],
+    ["Sorgenrunde halten","Vorbehalte anhören und beantworten"],
+    ["KI im Onboarding","neue Kollegen ab Tag eins"]]},
+  {n:"05", t:"Wissen & Prozesse", c:"#b82c9c", tint:"#fbf2f9", themen:[
+    ["Wissensdatenbank aufbauen","die 20 häufigsten Fragen zuerst"],
+    ["Vom Handbuch zum Wiki","veraltete Ordner ablösen"],
+    ["Prozesse dokumentieren","je Bereich eine Übersicht"],
+    ["Mitschriften & Transkription","interne Termine festhalten und ablegen"],
+    ["KI-lesbare Ablage","Textformate, einheitliche Namen"]]},
+  {n:"06", t:"Datenschutz & Recht", c:"#cc3080", tint:"#fcf3f7", themen:[
+    ["AVV & § 203 prüfen","für jedes genutzte Tool"],
+    ["KI-Richtlinie beschließen","DStV-Muster als Basis"],
+    ["Datenschutzbeauftragten einbinden","Freigaben schriftlich"],
+    ["EU-AI-Act-Schulung dokumentieren","Pflicht erfüllt und belegt"],
+    ["Mandanten informieren","Auftragsvereinbarung ergänzen"]]},
+  {n:"07", t:"Tools & Steuerung", c:"#d93c62", tint:"#fdf3f6", themen:[
+    ["Tool-Liste mit Kosten","eine Person hat den Überblick"],
+    ["Langdock sauber ausrollen","Rechte, Gruppen, Standardmodell"],
+    ["TaxGraph fürs Team freigeben","Verbindung teilen nicht vergessen"],
+    ["Doppelte Tools kündigen","was keiner nutzt, fliegt"]]},
+  {n:"08", t:"Anwendung & Qualität", c:"#dd5044", tint:"#fdf4f4", themen:[
+    ["Prompt-Sammlung anlegen","die zehn besten zuerst, auffindbar für alle"],
+    ["Prüf-Checkliste einführen","Quellen und Zahlen vor jeder Weitergabe"],
+    ["Assistenten statt Chat","einmal einrichten, immer nutzen"],
+    ["Prompt-Schulung","Rolle, Hintergrund, Format mitgeben"]]},
+  {n:"09", t:"Eigenes gebaut", c:"#d96a2b", tint:"#fdf6f2", themen:[
+    ["Ersten eigenen Skill produktiv machen","z. B. Kontoauszug-Prüfung"],
+    ["Kanzlei-Design als Baustein","Reports im eigenen Look"],
+    ["Assistent fürs eigene Wissen","Fragen ans Handbuch stellen"],
+    ["Anbindungen testen","Outlook, Kalender, Ablage"],
+    ["Abbauen, was keiner nutzt","Ordnung im Werkzeugkasten"]]}
+];
+
+var KEY = "ziele-planer-2026-v5";
+var S = { kanzlei:"", zeitraum:"", ziele: [], seite: "ziele" };
+
+function leeresOber(text){ return { text: text || "", wer:"", bis:"", unter:[] }; }
+function leeresUnter(){ return { text:"", wer:"", bis:"", ok:false }; }
+
+// ---- Auto-Höhe für Textfelder ----
+var AUTOG = !(window.CSS && CSS.supports && CSS.supports("field-sizing","content"));
+function autog(el){
+  if (!AUTOG || !el || el.tagName !== "TEXTAREA") return;
+  el.style.height = "auto";
+  el.style.height = el.scrollHeight + "px";
+}
+function autogAlle(){ document.querySelectorAll("#liste textarea").forEach(autog); }
+
+function feld(obj, k, ph, cls){
+  var i = document.createElement("textarea");
+  i.rows = 1;
+  if (cls) i.className = cls;
+  i.value = obj[k] || "";
+  i.placeholder = ph;
+  i.addEventListener("input", function(){
+    obj[k] = i.value; autog(i); speichern(); markiereKatalog(); zaehle();
+  });
+  return i;
+}
+function deDatum(iso){
+  if (!iso) return "";
+  var p = iso.split("-");
+  return p[2] + "." + p[1] + "." + p[0];
+}
+function datum(obj){
+  var box = document.createElement("div");
+  var d = document.createElement("input");
+  d.type = "date"; d.value = obj.bis || "";
+  var p = document.createElement("div");
+  p.className = "datp";
+  p.textContent = deDatum(obj.bis);
+  d.addEventListener("input", function(){
+    obj.bis = d.value; p.textContent = deDatum(d.value); speichern();
+  });
+  box.appendChild(d); box.appendChild(p);
+  return box;
+}
+function knopfX(fn){
+  var x = document.createElement("button");
+  x.type = "button"; x.className = "del"; x.innerHTML = "&times;"; x.title = "Zeile entfernen";
+  x.addEventListener("click", fn);
+  return x;
+}
+
+// ---- Ziele ----
+function renderZiele(){
+  var wrap = document.getElementById("liste");
+  wrap.innerHTML = "";
+  S.ziele.forEach(function(o, oi){
+    var g = document.createElement("div");
+    g.className = "grp";
+
+    var kopf = document.createElement("div");
+    kopf.className = "ober";
+    var nr = document.createElement("div");
+    nr.className = "onum"; nr.textContent = (oi + 1);
+    kopf.appendChild(nr);
+    kopf.appendChild(feld(o, "text", "Oberziel – am Stichtag nachprüfbar", "zt"));
+    var dd = datum(o); dd.className = "odat";
+    kopf.appendChild(dd);
+    kopf.appendChild(knopfX(function(){ S.ziele.splice(oi,1); alles(); }));
+    var who = document.createElement("div");
+    who.className = "owho";
+    var lbl = document.createElement("span"); lbl.textContent = "Wer";
+    who.appendChild(lbl);
+    who.appendChild(feld(o, "wer", "Name"));
+    kopf.appendChild(who);
+    g.appendChild(kopf);
+
+    if (o.unter.length){
+      var ul = document.createElement("div");
+      ul.className = "unterliste";
+      o.unter.forEach(function(u, ui){
+        ul.appendChild(unterZeile(u, function(){ o.unter.splice(ui,1); alles(); }));
+      });
+      g.appendChild(ul);
+    }
+
+    var ua = document.createElement("button");
+    ua.type = "button"; ua.className = "uadd"; ua.textContent = "+ Unterziel";
+    ua.addEventListener("click", function(){ o.unter.push(leeresUnter()); alles(); });
+    g.appendChild(ua);
+
+    wrap.appendChild(g);
+  });
+  document.getElementById("leerhin").hidden = S.ziele.length > 0;
+  zaehle();
+  setTimeout(autogAlle, 0);
+}
+
+function unterZeile(u, loeschen){
+  var r = document.createElement("div");
+  r.className = "zrow" + (u.ok ? " erl" : "");
+  var sp = document.createElement("div"); sp.className = "sp";
+  r.appendChild(sp);
+  var b = document.createElement("button");
+  b.type = "button"; b.className = "box" + (u.ok ? " ok" : "");
+  b.title = "abhaken";
+  b.addEventListener("click", function(){
+    u.ok = !u.ok;
+    b.classList.toggle("ok", u.ok);
+    r.classList.toggle("erl", u.ok);
+    speichern();
+  });
+  r.appendChild(b);
+  var mitte = document.createElement("div");
+  mitte.appendChild(feld(u, "text", "Unterziel", "zt"));
+  var w = feld(u, "wer", "Wer");
+  w.classList.add("wer");
+  mitte.appendChild(w);
+  r.appendChild(mitte);
+  var d = datum(u); d.className = "dat";
+  r.appendChild(d);
+  r.appendChild(knopfX(loeschen));
+  return r;
+}
+
+function zaehle(){ document.getElementById("anzahl").textContent = S.ziele.length; }
+function addOber(){ S.ziele.push(leeresOber()); alles(); }
+
+// ---- Themen-Katalog ----
+function renderKatalog(){
+  var k = document.getElementById("katalog");
+  k.innerHTML = "";
+  KATALOG.forEach(function(b){
+    var kap = document.createElement("div");
+    kap.className = "kap";
+    kap.innerHTML = '<div class="kkopf" style="--kc:' + b.c + ';--kt:' + b.tint + '">' +
+      '<span class="kn">' + b.n + '</span><b>' + b.t + '</b></div>';
+    b.themen.forEach(function(th){
+      var btn = document.createElement("button");
+      btn.type = "button"; btn.className = "thema";
+      btn.style.setProperty("--kc", b.c);
+      btn.style.setProperty("--kt", b.tint);
+      btn.dataset.thema = th[0];
+      btn.innerHTML = "<b>" + th[0] + "</b><em>" + th[1] + "</em><span class='plus'></span>";
+      btn.addEventListener("click", function(){
+        if (istDrin(th[0])) return;
+        S.ziele.push(leeresOber(th[0]));
+        speichern(); renderZiele(); markiereKatalog();
+      });
+      kap.appendChild(btn);
+    });
+    k.appendChild(kap);
+  });
+  markiereKatalog();
+}
+function istDrin(text){
+  return S.ziele.some(function(o){ return o.text.trim().toLowerCase() === text.trim().toLowerCase(); });
+}
+function markiereKatalog(){
+  document.querySelectorAll(".thema").forEach(function(el){
+    el.classList.toggle("drin", istDrin(el.dataset.thema));
+  });
+}
+
+// ---- Navigation, Druck, Speichern ----
+function wechsel(s){
+  S.seite = s;
+  document.getElementById("seite-ziele").hidden = s !== "ziele";
+  document.getElementById("seite-themen").hidden = s !== "themen";
+  document.getElementById("navZiele").classList.toggle("an", s === "ziele");
+  document.getElementById("navThemen").classList.toggle("an", s === "themen");
+  speichern();
+  window.scrollTo(0, 0);
+}
+function drucken(){ druckVorbereiten(); window.print(); }
+function druckVorbereiten(){
+  autogAlle();
+  document.getElementById("pKanzlei").textContent = S.kanzlei.trim() || "Unsere Kanzlei";
+  document.getElementById("pZeitraum").textContent = S.zeitraum.trim();
+  document.querySelectorAll("#liste .grp").forEach(function(g){
+    var voll = false;
+    g.querySelectorAll(".ober textarea.zt, .zrow textarea.zt").forEach(function(t){
+      var leer = !t.value.trim();
+      var row = t.closest(".zrow");
+      if (row) row.classList.toggle("druckleer", leer);
+      if (!leer) voll = true;
+    });
+    g.classList.toggle("druckleer", !voll);
+  });
+}
+window.addEventListener("beforeprint", druckVorbereiten);
+
+function speichern(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
+function alles(){ speichern(); renderZiele(); markiereKatalog(); }
+function allesLoeschen(){
+  try{ localStorage.removeItem(KEY); }catch(e){}
+  S = { kanzlei:"", zeitraum:"", ziele:[], seite:"ziele" };
+  S.ziele.push(leeresOber());
+  S.ziele[0].unter.push(leeresUnter());
+  document.getElementById("kanzlei").value = "";
+  document.getElementById("zeitraum").value = "";
+  alles(); wechsel("ziele");
+}
+
+document.getElementById("kanzlei").addEventListener("input", function(){ S.kanzlei = this.value; speichern(); });
+document.getElementById("zeitraum").addEventListener("input", function(){ S.zeitraum = this.value; speichern(); });
+
+// ---- Start ----
+try{
+  var g = JSON.parse(localStorage.getItem(KEY));
+  if (g && g.ziele) S = Object.assign({ kanzlei:"", zeitraum:"", seite:"ziele" }, g);
+}catch(e){}
+if (!S.ziele.length){
+  S.ziele.push(leeresOber());
+  S.ziele[0].unter.push(leeresUnter());
+}
+document.getElementById("kanzlei").value = S.kanzlei || "";
+document.getElementById("zeitraum").value = S.zeitraum || "";
+var l = document.querySelector(".top .logo");
+if (l) document.getElementById("pLogo").innerHTML = l.outerHTML;
+renderZiele();
+renderKatalog();
+wechsel(S.seite === "themen" ? "themen" : "ziele");
+</script>
+</body>
+</html>
