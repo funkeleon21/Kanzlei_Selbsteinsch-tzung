@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Schrittaufzeichner-Konverter | KI Integrator Campus</title>
 <!--
-  Schrittaufzeichner-Konverter – KI Integrator Campus (newgen), Version 1.8
+  Schrittaufzeichner-Konverter – KI Integrator Campus (newgen), Version 1.8.1
 
   Wandelt die .mht-Datei des Windows-Schrittaufzeichners (Problem Steps Recorder)
   in eine einzelne, deutlich kleinere HTML-Datei um. Die Screenshots werden
@@ -22,7 +22,7 @@
   Haupt-Skript). Es wird mit scripts/build_konverter.py eingesetzt, nie von Hand.
 
   Aufbau der erzeugten Datei (für Werkzeuge, die sie weiterverarbeiten):
-    <meta name="generator" content="Schrittaufzeichner-Konverter 1.8">
+    <meta name="generator" content="Schrittaufzeichner-Konverter 1.8.1">
     <section class="schritt" id="Step1"> … <img data-psr-screenshot="screenshot0001.JPEG" src="data:image/…"> … </section>
     Bei mehreren Bildschirmen trägt das <img> zusätzlich data-psr-ausschnitt="x,y,b,h": der Bereich des
     Gesamtbilds (in Bildschirmkoordinaten der Aufzeichnung), den das gespeicherte Bild zeigt.
@@ -323,7 +323,7 @@ return Module;
 </script>
 <script>
 'use strict';
-const VERSION = '1.8';
+const VERSION = '1.8.1';
 const $ = s => document.querySelector(s);
 const state = { datei: null, haupt: '', xml: '', meta: null, aktionen: [], lauf: 0, html: '' };
 const drop = document.querySelector('#drop');
