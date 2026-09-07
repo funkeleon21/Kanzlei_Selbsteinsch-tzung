@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Schrittaufzeichner-Konverter | KI Integrator Campus</title>
 <!--
-  Schrittaufzeichner-Konverter – KI Integrator Campus (newgen), Version 1.8.3
+  Schrittaufzeichner-Konverter – KI Integrator Campus (newgen), Version 1.9.0
 
   Wandelt die .mht-Datei des Windows-Schrittaufzeichners (Problem Steps Recorder)
   in eine einzelne, deutlich kleinere HTML-Datei um. Die Screenshots werden
@@ -22,7 +22,7 @@
   Haupt-Skript). Es wird mit scripts/build_konverter.py eingesetzt, nie von Hand.
 
   Aufbau der erzeugten Datei (für Werkzeuge, die sie weiterverarbeiten):
-    <meta name="generator" content="Schrittaufzeichner-Konverter 1.8.3">
+    <meta name="generator" content="Schrittaufzeichner-Konverter 1.9.0">
     <section class="schritt" id="Step1"> … <img data-psr-screenshot="screenshot0001.JPEG" src="data:image/…"> … </section>
     Bei mehreren Bildschirmen trägt das <img> zusätzlich data-psr-ausschnitt="x,y,b,h": der Bereich des
     Gesamtbilds (in Bildschirmkoordinaten der Aufzeichnung), den das gespeicherte Bild zeigt.
@@ -115,7 +115,7 @@ section[hidden]{display:none}
 .dl{display:flex;flex-direction:column;align-items:flex-end;gap:8px}
 .dl small{font-size:11.5px;color:var(--muted);max-width:280px;text-align:right;word-break:break-all}
 .dl small b{color:var(--navy);font-weight:600}
-.status{font-size:12.5px;color:var(--muted);margin-top:14px}
+.status{font-size:12.5px;color:var(--muted);margin-top:14px;display:flex;align-items:center;flex-wrap:wrap;gap:0 4px}
 .status b{color:var(--navy)}
 
 /* Einstellungen */
@@ -155,6 +155,34 @@ legend,.lbl{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:u
 
 footer{margin:64px 0 32px;text-align:center;font-size:12px;color:var(--muted)}
 footer b{color:var(--navy);font-weight:600}
+
+/* Bewegung – sparsam, kurz, einmalig. Jede Animation zeigt etwas, das wirklich passiert. */
+@keyframes auftauchen{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes haken{to{stroke-dashoffset:0}}
+@keyframes schuetteln{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.hero>h1,.hero>.lead,.hero>.drop{animation:auftauchen .4s ease-out both}
+.hero>.lead{animation-delay:.08s}.hero>.drop{animation-delay:.16s}
+.drop .kreis{transition:transform .2s ease}
+.drop.aktiv .kreis{transform:translateY(-4px)}
+.drop.nein{animation:schuetteln .35s ease}
+.drop .geladen-zustand .ok path{stroke-dasharray:26;stroke-dashoffset:26}
+.drop.geladen .geladen-zustand .ok path{animation:haken .4s ease-out .1s forwards}
+.fehler:not([hidden]){animation:auftauchen .2s ease-out}
+.karte{opacity:0;transform:translateY(6px)}
+.karte.da{opacity:1;transform:none;transition:opacity .3s ease,transform .3s ease}
+.karte.da:hover{transform:translateY(-2px)}
+#b-download{--f:0;background:linear-gradient(90deg,var(--accent) calc(var(--f)*100%),rgba(53,56,205,.38) 0);transition:background .2s}
+#b-download:disabled{opacity:1;cursor:progress;box-shadow:none}
+#b-download:not(:disabled){--f:1}
+#b-download .ico path{stroke-dasharray:30;stroke-dashoffset:0;transition:stroke-dashoffset .3s}
+.badge{opacity:0;transform:translateY(3px);transition:opacity .3s ease .5s,transform .3s ease .5s}
+.badge.da{opacity:1;transform:none}
+.schema{display:inline-flex;gap:2px;vertical-align:-2px;margin-right:6px}
+.schema i{display:block;height:11px;border:1.5px solid var(--muted);border-radius:2px;opacity:.45;transition:opacity .3s,border-color .3s,background .3s}
+.schema i.klick{opacity:1;border-color:var(--accent);background:var(--accent-soft)}
+.flow>div{transition:border-color .3s ease,box-shadow .3s ease}
+.flow>div.naechster{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.karte{opacity:1;transform:none}.badge{opacity:1;transform:none}.drop .geladen-zustand .ok path{stroke-dashoffset:0}}
 
 @media (max-width:800px){
   .hero{padding-top:44px}
@@ -235,7 +263,7 @@ footer b{color:var(--navy);font-weight:600}
           <small><b id="dateiname">–</b></small>
         </div>
       </div>
-      <p class="status" id="status"></p>
+      <p class="status"><span id="schema"></span><span id="status"></span></p>
       <details class="einst" id="einst">
         <summary><span id="einst-summe">Einstellungen</span><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
         <div class="opts">
@@ -323,7 +351,7 @@ return Module;
 </script>
 <script>
 'use strict';
-const VERSION = '1.8.3';
+const VERSION = '1.9.0';
 const $ = s => document.querySelector(s);
 const state = { datei: null, haupt: '', xml: '', meta: null, aktionen: [], lauf: 0, html: '' };
 const drop = document.querySelector('#drop');
@@ -334,6 +362,20 @@ function mb(b){ return b >= 1048576 ? (b/1048576).toLocaleString('de-DE',{maximu
 function zeigeFehler(msg){ const f=$('#fehler'); f.textContent=msg; f.hidden=!msg; }
 function zeigeHinweis(html){ const h=$('#hinweis'); h.innerHTML=html; h.hidden=!html; }
 function debounce(fn, ms){ let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a), ms); }; }
+const ruhig = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+/* Zahl von 'von' nach 'bis' zählen – 600 ms, abgebremst */
+function zaehlen(el, von, bis){
+  if (ruhig || !von){ el.textContent = mb(bis); return; }
+  const t0 = performance.now(), d = 600;
+  const tick = t => { const k = Math.min(1, (t - t0) / d), e = 1 - Math.pow(1 - k, 3); el.textContent = mb(Math.round(von + (bis - von) * e)); if (k < 1) requestAnimationFrame(tick); };
+  requestAnimationFrame(tick);
+  setTimeout(() => { el.textContent = mb(bis); }, d + 100);   /* Hintergrund-Tabs halten Frames an – Endwert trotzdem setzen */
+}
+function schemaZeigen(monitore, gewaehlt){
+  const el = $('#schema'); if (!monitore){ el.innerHTML = ''; return; }
+  const maxH = Math.max(...monitore.map(m => m.h));
+  el.innerHTML = '<span class="schema" title="Erkannte Bildschirme – markiert ist der mit dem Klick">' + monitore.map((m, i) => `<i style="width:${Math.max(8, Math.round(16 * m.b / m.h))}px;height:${Math.round(11 * m.h / maxH)}px" class="${i === gewaehlt ? 'klick' : ''}"></i>`).join('') + '</span>';
+}
 
 /* ---------- MIME lesen ----------
    Die Datei wird byteweise als Latin-1 gelesen, damit jedes Byte genau ein Zeichen ist.
@@ -716,7 +758,7 @@ async function dateiVerarbeiten(datei, anzahlAbgelegt = 1){
     state.meta = meta; state.xml = xml; state.quelle = quelle;
     state.aktionen = aktionen.map(a => ({ ...a, blob: bilder[a.screenshot] || bilder[bildSchluessel(a.screenshot)] || null, masse: null, bild: null }));
     $('#k-orig').textContent = mb(datei.size);
-    $('#k-neu').textContent = '…'; $('#k-spar').textContent = '…';
+    $('#k-neu').textContent = '…'; $('#k-spar').textContent = '…'; $('#k-spar').classList.remove('da'); $('#schema').innerHTML = '';
     $('#k-schritte').textContent = aktionen.length + ' Schritte';
     $('#dateiname').textContent = zielname();
     $('#drop-datei').textContent = `${datei.name} · ${mb(datei.size)}` + (quelle !== datei.name ? ` · darin ${quelle}` : ''); drop.classList.add('geladen');
@@ -730,6 +772,7 @@ async function dateiVerarbeiten(datei, anzahlAbgelegt = 1){
     await bilderBauen();
   } catch (e){
     zeigeFehler(e.message || String(e));
+    drop.classList.remove('nein'); void drop.offsetWidth; drop.classList.add('nein');
   }
 }
 
@@ -764,6 +807,7 @@ async function bilderBauen(){
     if (lauf !== state.lauf) return;
     if (!a.blob){ a.bild = null; continue; }
     $('#status').innerHTML = `Bild <b>${++n}</b> von <b>${mitBlob.length}</b> …` + (o.format === 'avif' ? ' AVIF braucht etwa zwei Sekunden je Bild.' : '');
+    $('#b-download').style.setProperty('--f', (n - 1) / mitBlob.length); document.title = `${n}/${mitBlob.length} · Schrittaufzeichner-Konverter`;
     await new Promise(r => setTimeout(r, 0));
     let im = null;
     try {
@@ -782,9 +826,12 @@ async function bilderBauen(){
       a.bild = null; a.masse = null; probleme.push(`Schritt ${a.nummer}: ${e.message || e}`);
     } finally { if (im && im.close) im.close(); }
     const i = state.aktionen.indexOf(a), el = $(`#im-${i}`);
-    if (el && a.bild){ el.src = a.bild.dataUrl; el.alt = `Screenshot zu Schritt ${a.nummer}`; }
+    if (el && a.bild){ el.src = a.bild.dataUrl; el.alt = `Screenshot zu Schritt ${a.nummer}`; el.closest('.karte').classList.add('da'); }
+    $('#b-download').style.setProperty('--f', n / mitBlob.length);
   }
   if (lauf !== state.lauf) return;
+  document.title = 'Schrittaufzeichner-Konverter | KI Integrator Campus';
+  document.querySelectorAll('.karte').forEach(k => k.classList.add('da'));
   const gebaut = state.aktionen.filter(a => a.bild);
   if (!gebaut.length){ zeigeFehler('Der Browser konnte die Screenshots nicht lesen: ' + probleme.slice(0, 3).join(' · ')); $('#status').textContent = ''; return; }
   if (probleme.length) zeigeFehler('Einige Screenshots konnte der Browser nicht lesen, diese Schritte bleiben ohne Bild: ' + probleme.slice(0, 3).join(' · ') + (probleme.length > 3 ? ' …' : ''));
@@ -799,8 +846,9 @@ async function bilderBauen(){
     + (rueckfall ? ' · Dieser Browser kann kein WebP schreiben, die Bilder sind JPEG.' : '')
     + (groesse > 9.5 * 1048576 ? ` · <b>Achtung:</b> über 9,5 MB – Langdock nimmt höchstens 10 MB an. Bildbreite oder Qualität senken.` : '');
   $('#einst-summe').textContent = `Einstellungen · ${o.breite ? o.breite + ' px' : 'Originalgröße'} · ${bsp.bild.typ.replace('image/','').toUpperCase()} · ${Math.round(o.qualitaet * 100)} %` + (state.monitore ? ` · ${state.monitore.length} Bildschirme` : '');
-  $('#k-neu').textContent = mb(groesse);
-  $('#k-spar').textContent = Math.round(Math.max(0, 1 - groesse / state.datei.size) * 100) + ' % kleiner';
+  zaehlen($('#k-neu'), state.datei.size, groesse);
+  $('#k-spar').textContent = Math.round(Math.max(0, 1 - groesse / state.datei.size) * 100) + ' % kleiner'; $('#k-spar').classList.add('da');
+  schemaZeigen(state.monitore, state.monitore ? state.monitore.findIndex(m => bsp.ausschnitt && m.x === bsp.ausschnitt[0]) : -1);
   $('#b-download').disabled = false;
 }
 const bilderBauenSpaeter = debounce(bilderBauen, 300);
@@ -838,7 +886,14 @@ $('#datei').addEventListener('change', e => { const fs = e.target.files; if (fs.
 document.querySelectorAll('input[name=breite], input[name=format], #o-monitor').forEach(el => el.addEventListener('change', () => { if (state.aktionen.length) bilderBauenSpaeter(); }));
 $('#version').textContent = VERSION;
 $('#o-qual').addEventListener('input', e => { $('#o-qual-out').textContent = e.target.value + ' %'; if (state.aktionen.length) bilderBauenSpaeter(); });
-$('#b-download').addEventListener('click', herunterladen);
+$('#b-download').addEventListener('click', () => {
+  herunterladen();
+  const b = $('#b-download'), alt = b.innerHTML;
+  b.innerHTML = '<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Gespeichert';
+  const karte = document.querySelector('#so-gehts .flow > div:nth-child(3)');
+  setTimeout(() => { b.innerHTML = alt; karte.classList.add('naechster'); }, 1400);
+  setTimeout(() => karte.classList.remove('naechster'), 3600);
+});
 window.psrDateiVerarbeiten = dateiVerarbeiten; /* Einstieg für automatische Tests */
 window.psrErgebnis = () => state.html;
 </script>
